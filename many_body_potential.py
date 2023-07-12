@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 from copy import deepcopy
-from structure_io import read_xyz_traj, write_xyz_traj
+from structure_io import read_xyz_traj
 import math
 from ase.calculators.calculator import Calculator
 from representation import generate_Al2F2_representation
