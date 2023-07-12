@@ -85,6 +85,7 @@ class ml_potential(Calculator):
             energy_std_0 = energy_std_list[0]
             if self.if_print_uncertainty:
                 self.log_morest.write("Current sampling step: "+str(self.current_step)+"\n")
+                self.log_morest.write("Current ML energy: "+str(energy_0)+"\n")
                 self.log_morest.write("Current ML energy uncertainty: "+str(energy_std_0)+"\n\n")
             for i,i_energy in enumerate(energy_list[1:]):
                 force_value = -1*(i_energy - energy_0)/self.fd_displacement
@@ -96,6 +97,7 @@ class ml_potential(Calculator):
             potential_energy, potential_energy_std, forces, forces_std = self.get_ml_potential(system)
             if self.if_print_uncertainty:
                 self.log_morest.write("Current sampling step: "+str(self.current_step)+"\n")
+                self.log_morest.write("Current ML energy: "+str(potential_energy)+"\n")
                 self.log_morest.write("Current ML energy uncertainty: "+str(potential_energy_std)+"\n\n")
             self.potential_energy = potential_energy
             self.forces = forces
