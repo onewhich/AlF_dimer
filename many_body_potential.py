@@ -36,7 +36,7 @@ class ml_potential(Calculator):
             self.ml_potential = pickle.load(open(self.trained_ml_potential, 'rb'))
         except:
             if 'ml_training_set' in kwargs['ml_parameters']:
-                self.training_set = kwargs['ml_parameters']['ml_training_set']
+                self.training_set = read_xyz_traj(kwargs['ml_parameters']['ml_training_set'])
                 self.log_morest.write('Trained ML model has not beed indicated. The ML model will be trained from training set.\n')
                 self.ml_potential = self.train_ml_potential()
             else:
