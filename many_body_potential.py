@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 from copy import deepcopy
-from structure_io import read_xyz_traj, write_xyz_traj
+from structure_io import read_xyz_traj
 import math
 from ase.calculators.calculator import Calculator
 from representation import generate_Al2F2_representation
@@ -36,7 +36,15 @@ class ml_potential(Calculator):
             self.ml_potential = pickle.load(open(self.trained_ml_potential, 'rb'))
         except:
             if 'ml_training_set' in kwargs['ml_parameters']:
-                self.training_set = kwargs['ml_parameters']['ml_training_set']
+                self.training_set = read_xyz_traj(kwargs['ml_parameters']['ml_training_set'])
+                if 'ml_gpr_noise_level_bounds' in kwargs['ml_parameters']:
+                    tmp_noise_level_bounds = kwargs['ml_parameters']['ml_gpr_noise_level_bounds']
+                    if type(tmp_noise_level_bounds) == float:
+                        self.noise_level_bounds = np.array([tmp_noise_level_bounds, 1.])
+                    elif type(tmp_noise_level_bounds) == np.ndarray:
+                        self.noise_level_bounds = np.array([tmp_noise_level_bounds[0], tmp_noise_level_bounds[1]])
+                else:
+                    self.noise_level_bounds = np.array([1e-7, 1.])
                 self.log_morest.write('Trained ML model has not beed indicated. The ML model will be trained from training set.\n')
                 self.ml_potential = self.train_ml_potential()
             else:
@@ -81,7 +89,7 @@ class ml_potential(Calculator):
             energy_list, energy_std_list = self.get_ml_potential(system_list)
             #print("Energy:", energy_list)
             #print("Energy std:", energy_std_list)
-            energy_0 = energy_list[0][0]
+            energy_0 = energy_list[0]
             energy_std_0 = energy_std_list[0]
             if self.if_print_uncertainty:
                 self.log_morest.write("Current sampling step: "+str(self.current_step)+"\n")
