@@ -50,7 +50,7 @@ for i,i_sys in enumerate(test_set):
     # Make test-set prediction
     test_set_prediction.append(i_sys.get_potential_energy())
 
-print("Test-set RMSE:", ml_potential.RMSE(test_set_true, test_set_prediction))
+log_file.write("Test-set RMSE: "+str(ml_potential.RMSE(test_set_true, test_set_prediction)))
 np.savetxt(test_set_prediction_filename, test_set_prediction)
 
 

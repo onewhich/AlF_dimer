@@ -164,21 +164,23 @@ class ml_potential(Calculator):
 
         self.log.write("Training set:\n\tShape of feature: "+str(np.shape(x_train))+"\n")
         self.log.write("\tShape of label: "+str(np.shape(y_train))+"\n")
-
+        self.log.flush()
         gpr = GaussianProcessRegressor(kernel=gpr_kernel,normalize_y=True)
         
         # Train the model
         gpr.fit(x_train, y_train)
-
+        self.log.write("Model trained.")
+        self.log.flush()
         # Write the model
         with open(self.trained_ml_potential,'wb') as trained_model_file:
             pickle.dump(gpr, trained_model_file, protocol=4)
         self.log.write("The trained kernel: "+str(gpr.kernel_)+"\n")
-
+        self.log.flush()
         # Make preidctions for the training set
         y_train_pred, y_train_pred_std = gpr.predict(x_train, return_std=True)
         self.log.write("Training RMSE: "+str(self.RMSE(y_train, y_train_pred))+"\n")
         self.log.write("Training uncertainty: "+str(np.average(y_train_pred_std))+"\n")
         self.log.write("Median training uncertainty: "+str(np.median(y_train_pred_std))+"\n\n")
+        self.log.flush()
         return gpr
 
