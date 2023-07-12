@@ -10,7 +10,7 @@ def generate_Al2F2_representation(Al2F2, representation_name="inverse_r_exp_r_re
                                                              where the interatomic distances are normalized by the equilibrium interatomic
                                                              distances of diatomic molecule ij, optimized by ab intio methods, e.g. CCSD(T).
     """
-    Al1 = Al2F2.get_positions()[0] # change length in AA to Bohr
+    Al1 = Al2F2.get_positions()[0]
     F2 = Al2F2.get_positions()[1]
     Al3 = Al2F2.get_positions()[2]
     F4 = Al2F2.get_positions()[3]
