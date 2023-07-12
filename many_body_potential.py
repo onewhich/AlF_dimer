@@ -89,7 +89,7 @@ class ml_potential(Calculator):
             energy_list, energy_std_list = self.get_ml_potential(system_list)
             #print("Energy:", energy_list)
             #print("Energy std:", energy_std_list)
-            energy_0 = energy_list[0][0]
+            energy_0 = energy_list[0]
             energy_std_0 = energy_std_list[0]
             if self.if_print_uncertainty:
                 self.log_morest.write("Current sampling step: "+str(self.current_step)+"\n")
