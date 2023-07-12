@@ -37,8 +37,6 @@ class ml_potential(Calculator):
         except:
             if 'ml_training_set' in kwargs['ml_parameters']:
                 self.training_set = read_xyz_traj(kwargs['ml_parameters']['ml_training_set'])
-                self.log_morest.write('Trained ML model has not beed indicated. The ML model will be trained from training set.\n')
-                self.ml_potential = self.train_ml_potential()
                 if 'ml_gpr_noise_level_bounds' in kwargs['ml_parameters']:
                     tmp_noise_level_bounds = kwargs['ml_parameters']['ml_gpr_noise_level_bounds']
                     if type(tmp_noise_level_bounds) == float:
@@ -47,6 +45,8 @@ class ml_potential(Calculator):
                         self.noise_level_bounds = np.array([tmp_noise_level_bounds[0], tmp_noise_level_bounds[1]])
                 else:
                     self.noise_level_bounds = np.array([1e-7, 1.])
+                self.log_morest.write('Trained ML model has not beed indicated. The ML model will be trained from training set.\n')
+                self.ml_potential = self.train_ml_potential()
             else:
                 raise Exception('ML model or training set can not be read. Please specify the name.')
 
