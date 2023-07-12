@@ -1,14 +1,10 @@
 import numpy as np
 import pickle
 from copy import deepcopy
-from ase import units
 from structure_io import read_xyz_traj, write_xyz_traj
-import subprocess
-import os
 import math
-from collective_variable import collective_variables
-from ase.calculators.calculator import Calculator, FileIOCalculator
-from representation import generate_representation
+from ase.calculators.calculator import Calculator
+from representation import generate_Al2F2_representation
 from sklearn.gaussian_process import GaussianProcessRegressor, kernels
 
 
@@ -32,20 +28,9 @@ class ml_potential(Calculator):
         self.current_step = None
         self.log_morest = kwargs['log_file']
         self.if_print_uncertainty = kwargs['ml_parameters']['ml_print_uncertainty']
-        self.if_fd_forces = True
-        self.fd_displacement = kwargs['ml_parameters']['fd_displacement']
-        if kwargs['ml_parameters']['ml_additional_features'] == None:
-            self.additional_features = None
-        else:
-            self.additional_features = collective_variables(CVs_list=kwargs['ml_parameters']['ml_additional_features'])
-        if kwargs['ml_parameters']['ml_additional_features_min'] == None:
-            self.additional_features_min = None
-        else:
-            self.additional_features_min = collective_variables(CVs_list=kwargs['ml_parameters']['ml_additional_features_min'])
-        if kwargs['ml_parameters']['ml_additional_features_max'] == None:
-            self.additional_features_max = None
-        else:
-            self.additional_features_max = collective_variables(CVs_list=kwargs['ml_parameters']['ml_additional_features_max'])
+        self.if_fd_forces = kwargs['ml_parameters']['ml_fd_forces']
+        if self.if_fd_forces:
+            self.fd_displacement = kwargs['ml_parameters']['fd_displacement']
         try:
             self.trained_ml_potential = kwargs['ml_parameters']['ml_potential_model']
             self.ml_potential = pickle.load(open(self.trained_ml_potential, 'rb'))
@@ -57,25 +42,9 @@ class ml_potential(Calculator):
         self.results['energy'], self.results['forces'] = self.get_potential_forces(self.atoms)
 
     def get_ml_potential(self, system_list):
-        #if type(system_list) != list:
-        #    raise ValueError
-        #representation_list = [generate_representation.generate_Al2F2_representation(i_system) for i_system in system_list]
-        representation_list = generate_representation(system_list).inverse_r_exp_r()
-        if self.additional_features == None:
-            representation_list = representation_list
-        else:
-            addional_features_list = self.additional_features.generate_CVs_list(system_list)
-            representation_list = np.hstack((representation_list,addional_features_list))
-        if self.additional_features_min == None:
-            representation_list = representation_list
-        else:
-            addional_features_list = self.additional_features_min.generate_CV_min_list(system_list)
-            representation_list = np.hstack((representation_list,addional_features_list))
-        if self.additional_features_max == None:
-            representation_list = representation_list
-        else:
-            addional_features_list = self.additional_features_max.generate_CV_max_list(system_list)
-            representation_list = np.hstack((representation_list,addional_features_list))
+        if type(system_list) != list:
+            raise ValueError
+        representation_list = [generate_Al2F2_representation(i_system) for i_system in system_list]
         if self.if_fd_forces:
             ml_energy, ml_energy_std = self.ml_potential.predict(representation_list, return_std=True)
             ml_energy = np.array(ml_energy)
