@@ -1,0 +1,15 @@
+Trained ML model has not beed indicated. The ML model will be trained from training set.
+Training set:
+	Shape of feature: (18732, 14)
+	Shape of label: (18732,)
+Model trained.
+The trained kernel: Matern(length_scale=1, nu=2.5) * DotProduct(sigma_0=10) + WhiteKernel(noise_level=0.1)
+Training MAE: 0.0006493466157721303 eV/atom
+Training RMSE: 0.0018475723576306584 eV/atom
+Training uncertainty: 0.13224638482737833
+Median training uncertainty: 0.1317241504638837
+
+Trained PES model saved to trained_ml_potential_model.pkl
+
+Test-set MAE: 0.001603864437454427 eV/atom
+Test-set RMSE: 0.005479324509565209eV/atom
