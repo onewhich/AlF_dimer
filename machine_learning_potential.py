@@ -6,7 +6,7 @@ from ase.io import read
 from ase.calculators.calculator import Calculator
 from representation import generate_Al2F2_representation
 from sklearn.gaussian_process import GaussianProcessRegressor, kernels
-
+from sklearn.metrics import mean_absolute_error as MAE
 
 
 class ml_potential(Calculator):
@@ -165,22 +165,28 @@ class ml_potential(Calculator):
         self.log.write("Training set:\n\tShape of feature: "+str(np.shape(x_train))+"\n")
         self.log.write("\tShape of label: "+str(np.shape(y_train))+"\n")
         self.log.flush()
+
         gpr = GaussianProcessRegressor(kernel=gpr_kernel,normalize_y=True)
         
         # Train the model
+        #print("Training model...", flush=True)
         gpr.fit(x_train, y_train)
-        self.log.write("Model trained.")
+        self.log.write("Model trained.\n")
+        self.log.write("The trained kernel: "+str(gpr.kernel_)+"\n")
         self.log.flush()
+
+        # Make preidctions for the training set
+        y_train_pred, y_train_pred_std = gpr.predict(x_train, return_std=True)
+        self.log.write("Training MAE: " + str(MAE(y_train, y_train_pred)/4.0)+" eV/atom\n")
+        self.log.write("Training RMSE: "+ str(self.RMSE(y_train, y_train_pred)/4.0)+" eV/atom\n")
+        self.log.write("Training uncertainty: " + str(np.average(y_train_pred_std))+"\n")
+        self.log.write("Median training uncertainty: " + str(np.median(y_train_pred_std))+"\n\n")
+        self.log.flush()
+       
+
         # Write the model
         with open(self.trained_ml_potential,'wb') as trained_model_file:
             pickle.dump(gpr, trained_model_file, protocol=4)
-        self.log.write("The trained kernel: "+str(gpr.kernel_)+"\n")
-        self.log.flush()
-        # Make preidctions for the training set
-        y_train_pred, y_train_pred_std = gpr.predict(x_train, return_std=True)
-        self.log.write("Training RMSE: "+str(self.RMSE(y_train, y_train_pred))+"\n")
-        self.log.write("Training uncertainty: "+str(np.average(y_train_pred_std))+"\n")
-        self.log.write("Median training uncertainty: "+str(np.median(y_train_pred_std))+"\n\n")
-        self.log.flush()
+        self.log.write("Trained PES model saved to "+str(self.trained_ml_potential)+"\n")
         return gpr
 
