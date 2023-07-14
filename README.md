@@ -23,3 +23,5 @@ The necessary datasets, including the training set and test set(s), are specifie
 After training, the PES model is stored by default in `trained_ml_potential_model.pkl`. The training and testing results are printed in the  `AlF_dimer.log`file .
 
 The structural representations of the AlF-AlF complex are computed in `representation.py`. These representations are then used as inputs to the Gaussian process regression (GPR) model for training. If you wish to modify the Gaussian process kernels, please refer to `machine_learning_potential.py`. Currently, the kernel is a combination of the Matern(5/2) kernel and a dot-product kernel, with a white noise kernel indicating the noise level of the training set.
+
+[1] X. Liu, W. Wang, J. Pérez-Ríos, Molecular dynamics-driven global tetra-atomic potential energy surfaces: Application to AlF-AlF complex (2023)
