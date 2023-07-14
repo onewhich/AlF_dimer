@@ -7,7 +7,7 @@ This repository contains the code and associated datasets for the machine learni
 - Potential energy surface (PES) constructed for MD simulation, taking AlF-AlF complex as an example
 - Regressor: Gaussian process regression (GPR)
 
-#### Dependencies
+### Dependencies
 scikit-learn==1.0.1
 
 ase==3.22.1
