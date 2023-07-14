@@ -9,7 +9,9 @@ This repository contains the code and associated datasets for the machine learni
 
 #### Dependencies
 scikit-learn==1.0.1
+
 ase==3.22.1
+
 pickle
 
 ### Usage
